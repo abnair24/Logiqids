@@ -1,23 +1,20 @@
 import api.Download;
 import api.History;
 import api.Login;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
 import response.HistoryResponse;
 import response.LoginResponse;
 import response.Worksheet_history;
-
+import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
 
 public class Main {
 
@@ -30,6 +27,7 @@ public class Main {
         int user_id = loginResponse.getUser_id();
 
         HistoryResponse historyResponse = new History().getHistory(session_token,user_id,1);
+
         int totalPages = historyResponse.getTotal_pages();
 
         for(int i = 1;i<=totalPages;i++) {
@@ -83,6 +81,19 @@ public class Main {
             e.printStackTrace();
         }
         return path;
+    }
+
+    /*
+    for reading contents of pdd
+     */
+    private static String extract(byte[] pdf) throws IOException {
+        PDDocument pdfDocument = PDDocument.load(new ByteArrayInputStream(pdf));
+        try {
+            return new PDFTextStripper().getText(pdfDocument);
+        }
+        finally {
+            pdfDocument.close();
+        }
     }
 
 }
