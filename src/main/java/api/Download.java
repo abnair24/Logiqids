@@ -11,8 +11,8 @@ public class Download {
         System.out.println("Worksheet ID: "+id);
 
         byte[] pdf = given()
-                .contentType(ContentType.ANY)
-
+                .contentType("application/pdf")
+                .accept("*/*")
                 .header("session_token",sessionToken)
                 .header("user_id",userId)
                 .pathParam("id",id)
